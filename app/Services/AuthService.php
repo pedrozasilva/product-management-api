@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\Auth\UserLoggedIn;
+use App\Events\Auth\UserRegistered;
 use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -11,11 +13,15 @@ class AuthService
 {
     public function register(array $data): User
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => $data['password'],
         ]);
+
+        UserRegistered::dispatch($user);
+
+        return $user;
     }
 
     public function attemptLogin(string $email, string $password): ?User
@@ -25,6 +31,8 @@ class AuthService
         if (! $user || ! Hash::check($password, $user->password)) {
             return null;
         }
+
+        UserLoggedIn::dispatch($user);
 
         return $user;
     }

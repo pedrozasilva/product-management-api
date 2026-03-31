@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Events\Auth;
+
+use App\Models\User;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class UserLoggedIn implements AuditableAuthEvent
+{
+    use Dispatchable, SerializesModels;
+
+    public function __construct(
+        public readonly User $user,
+    ) {}
+
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function getAction(): string
+    {
+        return 'login';
+    }
+
+    public function getOldValues(): ?array
+    {
+        return null;
+    }
+
+    public function getNewValues(): ?array
+    {
+        return [
+            'email' => $this->user->email,
+        ];
+    }
+}

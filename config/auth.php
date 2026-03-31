@@ -114,4 +114,14 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Refresh Token Configuration
+    |--------------------------------------------------------------------------
+    */
+
+    'refresh_token' => [
+        'expiration_days' => env('AUTH_REFRESH_TOKEN_EXPIRATION_DAYS', 7),
+    ],
+
 ];

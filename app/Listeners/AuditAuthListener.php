@@ -29,6 +29,8 @@ class AuditAuthListener implements ShouldQueue
             'model_id' => $user->id,
             'old_values' => $event->getOldValues(),
             'new_values' => $event->getNewValues(),
+            'ip_address' => $event->getIpAddress(),
+            'user_agent' => $event->getUserAgent(),
         ]);
     }
 

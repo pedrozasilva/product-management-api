@@ -12,6 +12,8 @@ class UserRegistered implements AuditableAuthEvent
 
     public function __construct(
         public readonly User $user,
+        public readonly ?string $ipAddress = null,
+        public readonly ?string $userAgent = null,
     ) {}
 
     public function getUser(): User
@@ -35,5 +37,15 @@ class UserRegistered implements AuditableAuthEvent
             'name' => $this->user->name,
             'email' => $this->user->email,
         ];
+    }
+
+    public function getIpAddress(): ?string
+    {
+        return $this->ipAddress;
+    }
+
+    public function getUserAgent(): ?string
+    {
+        return $this->userAgent;
     }
 }

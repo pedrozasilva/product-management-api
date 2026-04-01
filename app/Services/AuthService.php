@@ -7,6 +7,7 @@ use App\Events\Auth\UserRegistered;
 use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
 
 class AuthService
@@ -19,7 +20,7 @@ class AuthService
             'password' => $data['password'],
         ]);
 
-        UserRegistered::dispatch($user);
+        UserRegistered::dispatch($user, Request::ip(), Request::userAgent());
 
         return $user;
     }
@@ -32,7 +33,7 @@ class AuthService
             return null;
         }
 
-        UserLoggedIn::dispatch($user);
+        UserLoggedIn::dispatch($user, Request::ip(), Request::userAgent());
 
         return $user;
     }

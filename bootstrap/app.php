@@ -18,7 +18,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->prefix('api')
                 ->group(function () {
                     require __DIR__.'/../routes/api/auth.php';
-                    require __DIR__.'/../routes/api/users.php';
                     require __DIR__.'/../routes/api/products.php';
                     require __DIR__.'/../routes/api/categories.php';
                 });

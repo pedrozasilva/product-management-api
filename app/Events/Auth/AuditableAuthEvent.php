@@ -13,4 +13,8 @@ interface AuditableAuthEvent
     public function getOldValues(): ?array;
 
     public function getNewValues(): ?array;
+
+    public function getIpAddress(): ?string;
+
+    public function getUserAgent(): ?string;
 }

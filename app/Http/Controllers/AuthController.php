@@ -20,7 +20,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = $this->authService->register($request->validated());
+        $user = $this->authService->register($request->validated(), request()->ip(), request()->userAgent());
         $tokens = $this->authService->createTokenPair($user, 'register');
 
         return $this->success([
@@ -34,6 +34,8 @@ class AuthController extends Controller
         $user = $this->authService->attemptLogin(
             $request->email,
             $request->password,
+            request()->ip(),
+            request()->userAgent(),
         );
 
         if (! $user) {

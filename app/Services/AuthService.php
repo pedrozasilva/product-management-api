@@ -7,12 +7,11 @@ use App\Events\Auth\UserRegistered;
 use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
 
 class AuthService
 {
-    public function register(array $data): User
+    public function register(array $data, string $ip, ?string $userAgent): User
     {
         $user = User::create([
             'name' => $data['name'],
@@ -20,12 +19,12 @@ class AuthService
             'password' => $data['password'],
         ]);
 
-        UserRegistered::dispatch($user, Request::ip(), Request::userAgent());
+        UserRegistered::dispatch($user, $ip, $userAgent);
 
         return $user;
     }
 
-    public function attemptLogin(string $email, string $password): ?User
+    public function attemptLogin(string $email, string $password, string $ip, ?string $userAgent): ?User
     {
         $user = User::where('email', $email)->first();
 
@@ -33,7 +32,7 @@ class AuthService
             return null;
         }
 
-        UserLoggedIn::dispatch($user, Request::ip(), Request::userAgent());
+        UserLoggedIn::dispatch($user, $ip, $userAgent);
 
         return $user;
     }

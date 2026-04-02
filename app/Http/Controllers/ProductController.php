@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Product\ListProductRequest;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
@@ -17,12 +18,14 @@ class ProductController extends Controller
         protected ProductService $service,
     ) {}
 
-    public function index(): JsonResponse
+    public function index(ListProductRequest $request): JsonResponse
     {
-        $products = $this->service->getAll();
+        $data = $request->validated();
+        $products = $this->service->paginate($data);
 
-        return $this->success(
-            ProductResource::collection($products),
+        return $this->paginatedSuccess(
+            $products,
+            ProductResource::class,
             'Produtos listados com sucesso.',
         );
     }

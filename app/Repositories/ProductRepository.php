@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository
 {
@@ -11,9 +12,16 @@ class ProductRepository
         protected Product $model,
     ) {}
 
-    public function getAll(): Collection
+    public function paginate(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        return $this->model->newQuery()->with(['category', 'user'])->latest()->get();
+        return $this->model->newQuery()
+            ->with(['category', 'user'])
+            ->when($filters['name'] ?? null, function ($query, $name) {
+                $name = trim($name);
+                $query->where('name', 'like', "%{$name}%");
+            })
+            ->latest()
+            ->paginate($perPage);
     }
 
     public function findById(int $id): ?Product

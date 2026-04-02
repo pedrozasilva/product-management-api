@@ -8,8 +8,7 @@ use App\Events\Product\ProductUpdated;
 use App\Models\Product;
 use App\Models\User;
 use App\Repositories\ProductRepository;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductService
 {
@@ -17,9 +16,10 @@ class ProductService
         protected ProductRepository $repository,
     ) {}
 
-    public function getAll(): Collection
+    public function paginate(array $data): LengthAwarePaginator
     {
-        return $this->repository->getAll();
+        $perPage = min($data['per_page'] ?? 20, 100);
+        return $this->repository->paginate($data, $perPage);
     }
 
     public function findById(int $id): ?Product

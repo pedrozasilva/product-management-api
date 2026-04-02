@@ -27,18 +27,18 @@ class ProductService
         return $this->repository->findById($id);
     }
 
-    public function create(array $data): Product
+    public function create(array $data, string $ip, ?string $userAgent): Product
     {
         $product = $this->repository->create($data);
 
         $user = User::find($data['user_id']);
 
-        ProductCreated::dispatch($product, $user, Request::ip(), Request::userAgent());
+        ProductCreated::dispatch($product, $user, $ip, $userAgent);
 
         return $product;
     }
 
-    public function update(Product $product, array $data): Product
+    public function update(Product $product, array $data, string $ip, ?string $userAgent): Product
     {
         $oldValues = [
             'name' => $product->name,
@@ -51,16 +51,16 @@ class ProductService
 
         $product = $this->repository->update($product, $data);
 
-        ProductUpdated::dispatch($product, $product->user, $oldValues, Request::ip(), Request::userAgent());
+        ProductUpdated::dispatch($product, $product->user, $oldValues, $ip, $userAgent);
 
         return $product;
     }
 
-    public function delete(Product $product): bool
+    public function delete(Product $product, string $ip, ?string $userAgent): bool
     {
         $user = $product->user;
 
-        ProductDeleted::dispatch($product, $user, Request::ip(), Request::userAgent());
+        ProductDeleted::dispatch($product, $user, $ip, $userAgent);
 
         return $this->repository->delete($product);
     }

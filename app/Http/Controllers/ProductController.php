@@ -32,7 +32,7 @@ class ProductController extends Controller
         $data = $request->validated();
         $data['user_id'] = $request->user()->id;
 
-        $product = $this->service->create($data);
+        $product = $this->service->create($data, request()->ip(), request()->userAgent());
 
         return $this->success(
             new ProductResource($product),
@@ -63,7 +63,7 @@ class ProductController extends Controller
             return $this->error('Produto não encontrado.', code: 404);
         }
 
-        $product = $this->service->update($product, $request->validated());
+        $product = $this->service->update($product, $request->validated(), request()->ip(), request()->userAgent());
 
         return $this->success(
             new ProductResource($product),
@@ -79,7 +79,7 @@ class ProductController extends Controller
             return $this->error('Produto não encontrado.', code: 404);
         }
 
-        $this->service->delete($product);
+        $this->service->delete($product, request()->ip(), request()->userAgent());
 
         return $this->success(
             message: 'Produto removido com sucesso.',

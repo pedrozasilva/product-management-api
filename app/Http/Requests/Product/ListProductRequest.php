@@ -27,6 +27,11 @@ class ListProductRequest extends FormRequest
             'page' => ['nullable', 'integer', 'min:1', 'max:100'],
             'per_page' => ['nullable', 'integer', 'min:1', 'max:100'],
             'name' => ['nullable', 'string', 'max:255'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'price_min' => ['nullable', 'numeric', 'min:0'],
+            'price_max' => ['nullable', 'numeric', 'min:0', $this->filled('price_min') ? 'gte:price_min' : ''],
+            'in_stock' => ['nullable', 'boolean'],
+            'is_active' => ['nullable', 'boolean'],
         ];
     }
 

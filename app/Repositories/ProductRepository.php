@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\Product;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductRepository
@@ -19,6 +18,23 @@ class ProductRepository
             ->when($filters['name'] ?? null, function ($query, $name) {
                 $name = trim($name);
                 $query->where('name', 'ilike', "%{$name}%");
+            })
+            ->when($filters['category_id'] ?? null, function ($query, $categoryId) {
+                $query->where('category_id', $categoryId);
+            })
+            ->when(isset($filters['price_min']), function ($query) use ($filters) {
+                $query->where('price', '>=', $filters['price_min']);
+            })
+            ->when(isset($filters['price_max']), function ($query) use ($filters) {
+                $query->where('price', '<=', $filters['price_max']);
+            })
+            ->when(isset($filters['in_stock']), function ($query) use ($filters) {
+                $filters['in_stock']
+                    ? $query->where('stock_quantity', '>', 0)
+                    : $query->where('stock_quantity', '<=', 0);
+            })
+            ->when(isset($filters['is_active']), function ($query) use ($filters) {
+                $query->where('is_active', $filters['is_active']);
             })
             ->latest()
             ->paginate($perPage);

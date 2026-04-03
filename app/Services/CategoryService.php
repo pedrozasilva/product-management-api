@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CategoryService
 {
@@ -12,9 +12,10 @@ class CategoryService
         protected CategoryRepository $repository,
     ) {}
 
-    public function getAll(): Collection
+    public function paginate(array $data): LengthAwarePaginator
     {
-        return $this->repository->getAll();
+        $perPage = min($data['per_page'] ?? 20, 100);
+        return $this->repository->paginate($data, $perPage);
     }
 
     public function findById(int $id): ?Category

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Category\ListCategoryRequest;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
@@ -17,12 +18,14 @@ class CategoryController extends Controller
         protected CategoryService $service,
     ) {}
 
-    public function index(): JsonResponse
+    public function index(ListCategoryRequest $request): JsonResponse
     {
-        $categories = $this->service->getAll();
+        $data = $request->validated();
+        $categories = $this->service->paginate($data);
 
-        return $this->success(
-            CategoryResource::collection($categories),
+        return $this->paginatedSuccess(
+            $categories,
+            CategoryResource::class,
             'Categorias listadas com sucesso.',
         );
     }

@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CategoryRepository
 {
@@ -11,9 +11,15 @@ class CategoryRepository
         protected Category $model,
     ) {}
 
-    public function getAll(): Collection
+    public function paginate(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        return $this->model->newQuery()->latest()->get();
+        return $this->model->newQuery()
+            ->when($filters['name'] ?? null, function ($query, $name) {
+                $name = trim($name);
+                $query->where('name', 'ilike', "%{$name}%");
+            })
+            ->latest()
+            ->paginate($perPage);
     }
 
     public function findById(int $id): ?Category

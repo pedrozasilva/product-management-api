@@ -18,7 +18,7 @@ class ProductRepository
             ->with(['category', 'user'])
             ->when($filters['name'] ?? null, function ($query, $name) {
                 $name = trim($name);
-                $query->where('name', 'like', "%{$name}%");
+                $query->where('name', 'ilike', "%{$name}%");
             })
             ->latest()
             ->paginate($perPage);
